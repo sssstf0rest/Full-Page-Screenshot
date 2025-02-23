@@ -83,3 +83,12 @@ chrome.action.onClicked.addListener((tab) => {
 });
 ```
 
+## 🤝 Contributing
+
+We welcome contributions! If you’d like to improve this project, follow these steps:
+
+1. **Fork** the repository.
+2. **Clone** your fork:
+   ```sh
+   git clone https://github.com/your-username/full-page-screenshot-extension.git
+
