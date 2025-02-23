@@ -39,7 +39,7 @@ A simple Chrome extension that captures a full-page screenshot by leveraging the
 }
 ```
 
-### background.js
+## background.js
 This script listens for the extension button click, captures a full-page screenshot using Chrome's debugging protocol, and opens the image in a new tab.
 
 ```js
