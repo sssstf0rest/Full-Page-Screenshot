@@ -38,7 +38,10 @@ A simple Chrome extension that captures a full-page screenshot by leveraging the
   }
 }
 
-## Background Script
+### `background.js`
+This script listens for the extension button click, captures a full-page screenshot using Chrome's debugging protocol, and opens the image in a new tab.
+
+```js
 chrome.action.onClicked.addListener((tab) => {
   if (!/^https?:\/\//.test(tab.url)) {
     console.error("Cannot capture screenshot on restricted URL:", tab.url);
@@ -50,24 +53,26 @@ chrome.action.onClicked.addListener((tab) => {
       console.error("Error attaching debugger:", chrome.runtime.lastError.message);
       return;
     }
+
     chrome.debugger.sendCommand({ tabId: tab.id }, "Page.enable", {}, () => {
       if (chrome.runtime.lastError) {
         console.error("Error enabling page:", chrome.runtime.lastError.message);
         chrome.debugger.detach({ tabId: tab.id });
         return;
       }
+
       chrome.debugger.sendCommand(
         { tabId: tab.id },
         "Page.captureScreenshot",
         { captureBeyondViewport: true },
-        (res) => {
+        (response) => {
           if (chrome.runtime.lastError) {
             console.error("Error capturing screenshot:", chrome.runtime.lastError.message);
-          } else if (!res || !res.data) {
-            console.error("No screenshot data returned.");
+          } else if (!response || !response.data) {
+            console.error("No screenshot data received.");
           } else {
-            const url = "data:image/png;base64," + res.data;
-            chrome.tabs.create({ url });
+            const screenshotUrl = "data:image/png;base64," + response.data;
+            chrome.tabs.create({ url: screenshotUrl });
           }
           chrome.debugger.detach({ tabId: tab.id });
         }
@@ -75,4 +80,5 @@ chrome.action.onClicked.addListener((tab) => {
     });
   });
 });
+
 
