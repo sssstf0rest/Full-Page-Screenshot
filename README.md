@@ -92,3 +92,6 @@ We welcome contributions! If you’d like to improve this project, follow these 
    ```sh
    git clone https://github.com/your-username/full-page-screenshot-extension.git
 
+## 📜 Licence
+
+This project is licensed under the **MIT License**.
