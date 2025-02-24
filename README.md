@@ -4,7 +4,7 @@ A simple Chrome extension that captures a full-page screenshot by leveraging the
 
 ## ❗️❗️ Issues to be solved
 
-It only works on Windows system but not on MacOS.
+It only works on Windows system but **not on MacOS**.
 
 ## Features
 - Capture full-page screenshots with a single click.
