@@ -2,6 +2,10 @@
 
 A simple Chrome extension that captures a full-page screenshot by leveraging the DevTools Debugger Protocol.
 
+## Issues to be solved
+
+It only works on windows platform but not on MacOS.
+
 ## Features
 - Capture full-page screenshots with a single click.
 - Automatically opens a new tab with the captured image.
