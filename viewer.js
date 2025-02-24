@@ -10,3 +10,5 @@ document.addEventListener("DOMContentLoaded", function () {
         document.body.innerHTML = "<h2>Failed to load screenshot.</h2>";
     }
 });
+
+// test
