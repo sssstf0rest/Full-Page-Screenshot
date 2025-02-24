@@ -1,13 +1,14 @@
 {
-  "name": "Full Page Screenshot",
-  "version": "1.0",
-  "manifest_version": 3,
-  "description": "Take a full page screenshot via DevTools protocol",
-  "permissions": ["debugger", "tabs", "downloads"],
-  "background": {
-    "service_worker": "background.js"
-  },
-  "action": {
-    "default_title": "Capture Full Page Screenshot"
+    "name": "Full Page Screenshot",
+    "version": "1.0",
+    "description": "Take a full page screenshot via DevTools protocol",
+    "manifest_version": 3,
+    "permissions": ["debugger", "tabs"],
+    "background": {
+      "service_worker": "background.js"
+    },
+    "action": {
+      "default_title": "Capture Full Page Screenshot"
+    }
   }
-}
+  
