@@ -1,13 +1,15 @@
 {
-  "name": "Full Page Screenshot",
-  "version": "1.0",
   "manifest_version": 3,
-  "description": "Take a full page screenshot via DevTools protocol",
-  "permissions": ["debugger", "tabs", "downloads"],
+  "name": "Full Page Screenshot Capture",
+  "version": "1.0",
+  "description": "Capture full page screenshots from Chrome DevTools.",
+  "permissions": [
+    "activeTab",
+    "tabs",
+    "scripting"
+  ],
   "background": {
-    "service_worker": "background.js"
+    "service_worker": "index.js"
   },
-  "action": {
-    "default_title": "Capture Full Page Screenshot"
-  }
+  "devtools_page": "index.html"
 }

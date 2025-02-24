@@ -1,51 +1,76 @@
-chrome.action.onClicked.addListener((tab) => {
-  console.log("Extension button clicked on:", tab.url);
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { Button, List } from 'antd';
+import 'antd/dist/antd.css';
+import { configureStore, createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import axios from 'axios';
+import { Provider, useDispatch, useSelector } from 'react-redux';
 
-  // Avoid capturing screenshots of image-based tabs or previously opened screenshots
-  if (tab.url.startsWith("data:image/png") || tab.url.includes("screenshot_viewer.html")) {
-    console.error("Preventing recursive screenshot capture.");
-    return;
-  }
-
-  if (!/^https?:\/\//.test(tab.url)) {
-    console.error("Cannot capture screenshot on restricted URL:", tab.url);
-    return;
-  }
-
-  chrome.debugger.attach({ tabId: tab.id }, "1.3", () => {
-    if (chrome.runtime.lastError) {
-      console.error("Error attaching debugger:", chrome.runtime.lastError.message);
-      return;
-    }
-    console.log("Debugger attached");
-
-    chrome.debugger.sendCommand({ tabId: tab.id }, "Page.enable", {}, () => {
+const captureScreenshot = createAsyncThunk('screenshot/capture', async (_, thunkAPI) => {
+  return new Promise((resolve, reject) => {
+    chrome.tabs.captureVisibleTab(null, { format: 'png' }, async (dataUrl) => {
       if (chrome.runtime.lastError) {
-        console.error("Error enabling page:", chrome.runtime.lastError.message);
-        chrome.debugger.detach({ tabId: tab.id });
-        return;
+        return reject(chrome.runtime.lastError);
       }
-      console.log("Page enabled");
-
-      chrome.debugger.sendCommand(
-        { tabId: tab.id },
-        "Page.captureScreenshot",
-        { captureBeyondViewport: true },
-        (response) => {
-          if (chrome.runtime.lastError) {
-            console.error("Error capturing screenshot:", chrome.runtime.lastError.message);
-          } else if (!response || !response.data) {
-            console.error("No screenshot data received.");
-          } else {
-            const screenshotUrl = "data:image/png;base64," + response.data;
-            console.log("Screenshot captured. Opening new tab...");
-
-            // Instead of opening the image directly, show it in a viewer
-            chrome.tabs.create({ url: "screenshot_viewer.html?src=" + encodeURIComponent(screenshotUrl) });
-          }
-          chrome.debugger.detach({ tabId: tab.id });
-        }
-      );
+      // Example axios call (dummy endpoint)
+      try {
+        await axios.post('https://example.com/upload', { screenshot: dataUrl });
+      } catch (error) {
+        // Handle error if needed
+      }
+      resolve(dataUrl);
     });
   });
 });
+
+const screenshotSlice = createSlice({
+  name: 'screenshot',
+  initialState: { screenshots: [] },
+  reducers: {},
+  extraReducers: (builder) => {
+    builder.addCase(captureScreenshot.fulfilled, (state, action) => {
+      state.screenshots.push(action.payload);
+    });
+  },
+});
+
+const store = configureStore({
+  reducer: { screenshot: screenshotSlice.reducer },
+});
+
+const App = () => {
+  const dispatch = useDispatch();
+  const screenshots = useSelector((state) => state.screenshot.screenshots);
+  return (
+    <div style={{ padding: '20px' }}>
+      <Button type="primary" onClick={() => dispatch(captureScreenshot())}>
+        Capture Screenshot
+      </Button>
+      <List
+        header={<div>Captured Screenshots</div>}
+        bordered
+        dataSource={screenshots}
+        renderItem={(item, index) => (
+          <List.Item key={index}>
+            <img src={item} alt={`screenshot-${index}`} style={{ width: '100%' }} />
+          </List.Item>
+        )}
+      />
+    </div>
+  );
+};
+
+ReactDOM.render(
+  <Provider store={store}>
+    <App />
+  </Provider>,
+  document.getElementById('root')
+);
+
+window.capture = function(command) {
+  if (command === 'full size screenshot') {
+    store.dispatch(captureScreenshot());
+  } else {
+    console.log('Unknown command');
+  }
+};
