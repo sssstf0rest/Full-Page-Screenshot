@@ -1,15 +1,17 @@
 {
   "manifest_version": 3,
-  "name": "Full Page Screenshot Capture",
+  "name": "Full Page Screenshot",
   "version": "1.0",
-  "description": "Capture full page screenshots from Chrome DevTools.",
+  "description": "Capture the entire webpage in one click and download it automatically.",
   "permissions": [
     "activeTab",
     "tabs",
     "scripting"
   ],
-  "background": {
-    "service_worker": "index.js"
+  "action": {
+    "default_popup": "popup.html"
   },
-  "devtools_page": "index.html"
+  "background": {
+    "service_worker": "background.js"
+  }
 }
